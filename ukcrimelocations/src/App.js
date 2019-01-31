@@ -19,14 +19,15 @@ class App extends Component {
       crimes: [],
       location: "",
       date: "2017-02",
-      loading: false
+      loading: false,
+      error: ""
     };
     this.handleChangeLocation = this.handleChangeLocation.bind(this);
     this.fetchCrimes = this.fetchCrimes.bind(this);
   }
 
   fetchCrimes() {
-    this.setState({ loading: true });
+    this.setState({ loading: true, error: "" });
     fetch(
       "https://data.police.uk/api/crimes-no-location?category=all-crime&force=" +
         this.state.location +
@@ -37,9 +38,14 @@ class App extends Component {
         return response.json();
       })
       .then(json => {
+        if (json.length === 0) {
+          throw Error("No crimes found");
+        }
         this.setState({ crimes: json, loading: false });
       })
-      .catch(error => console.error("Error:", error));
+      .catch(error =>
+        this.setState({ error: "Failed to find any crimes. Please try again." })
+      );
   }
 
   handleChangeLocation(location) {
@@ -88,6 +94,35 @@ class App extends Component {
           </Col>
         </Row>
         <hr />
+        <Row>
+          <Col>
+            <p
+              style={
+                this.state.crimes.length > 0 || this.state.loading
+                  ? { display: "none" }
+                  : null
+              }
+            >
+              Please select a location and date above and a table and map will
+              be displayed here.
+            </p>
+            <p
+              style={
+                !this.state.loading || this.state.error.length
+                  ? { display: "none" }
+                  : null
+              }
+            >
+              Loading...
+            </p>
+            <p
+              className="error"
+              style={!this.state.error.length ? { display: "none" } : null}
+            >
+              {this.state.error}
+            </p>
+          </Col>
+        </Row>
         <Row style={!this.state.crimes.length > 0 ? { display: "none" } : null}>
           <Col>
             <CrimeTable
@@ -99,14 +134,6 @@ class App extends Component {
         <Row style={!this.state.crimes.length > 0 ? { display: "none" } : null}>
           <Col>
             <Map crimes={this.state.crimes} />
-          </Col>
-        </Row>
-        <Row style={this.state.crimes.length > 0 ? { display: "none" } : null}>
-          <Col>
-            <p>
-              Please select a location and date above and a table and map will
-              be displayed here.
-            </p>
           </Col>
         </Row>
       </Container>
