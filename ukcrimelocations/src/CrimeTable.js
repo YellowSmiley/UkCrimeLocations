@@ -28,6 +28,9 @@ class CrimeTable extends Component {
           </thead>
           <tbody>{crimes}</tbody>
         </Table>
+        <p style={!this.props.loading ? { display: "none" } : null}>
+          Loading...
+        </p>
       </>
     );
   }

@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Jumbotron } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Jumbotron,
+  FormControl,
+  Button
+} from "react-bootstrap";
 import ForceSelector from "./ForceSelector";
 import Map from "./Map";
 import CrimeTable from "./CrimeTable";
@@ -10,15 +17,19 @@ class App extends Component {
     super(props);
     this.state = {
       crimes: [],
-      date: "2017-02"
+      location: "",
+      date: "2017-02",
+      loading: false
     };
     this.handleChangeLocation = this.handleChangeLocation.bind(this);
+    this.fetchCrimes = this.fetchCrimes.bind(this);
   }
 
-  fetchCrimes(location) {
+  fetchCrimes() {
+    this.setState({ loading: true });
     fetch(
       "https://data.police.uk/api/crimes-no-location?category=all-crime&force=" +
-        location +
+        this.state.location +
         "&date=" +
         this.state.date
     )
@@ -26,13 +37,13 @@ class App extends Component {
         return response.json();
       })
       .then(json => {
-        this.setState({ crimes: json });
+        this.setState({ crimes: json, loading: false });
       })
       .catch(error => console.error("Error:", error));
   }
 
   handleChangeLocation(location) {
-    this.fetchCrimes(location.value);
+    this.setState({ location: location.value });
   }
 
   render() {
@@ -55,17 +66,40 @@ class App extends Component {
           <Col>
             <ForceSelector handleChangeLocation={this.handleChangeLocation} />
           </Col>
+          <Col>
+            <p>Select Month</p>
+            <FormControl
+              type="month"
+              onChange={e => this.setState({ date: e.target.value })}
+            />
+          </Col>
         </Row>
-        <Row>
-          <br />
-        </Row>
+        <br />
         <Row>
           <Col>
-            <CrimeTable crimes={this.state.crimes} />
+            <Button
+              onClick={this.fetchCrimes}
+              disabled={
+                !this.state.location.length > 0 && !this.state.date.length > 0
+              }
+            >
+              Search
+            </Button>
+          </Col>
+        </Row>
+        <hr />
+        <Row>
+          <Col>
+            <CrimeTable
+              crimes={this.state.crimes}
+              loading={this.state.loading}
+            />
           </Col>
         </Row>
         <Row>
-          <Col>{/* <Map crimes={this.state.crimes} /> */}</Col>
+          <Col>
+            <Map crimes={this.state.crimes} />
+          </Col>
         </Row>
       </Container>
     );
