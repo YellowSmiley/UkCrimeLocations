@@ -57,7 +57,7 @@ class App extends Component {
         />
         <Row>
           <Col>
-            <Jumbotron fluid>
+            <Jumbotron>
               <h1>UK Crime Locations</h1>
             </Jumbotron>
           </Col>
@@ -88,7 +88,7 @@ class App extends Component {
           </Col>
         </Row>
         <hr />
-        <Row>
+        <Row style={!this.state.crimes.length > 0 ? { display: "none" } : null}>
           <Col>
             <CrimeTable
               crimes={this.state.crimes}
@@ -96,9 +96,17 @@ class App extends Component {
             />
           </Col>
         </Row>
-        <Row>
+        <Row style={!this.state.crimes.length > 0 ? { display: "none" } : null}>
           <Col>
             <Map crimes={this.state.crimes} />
+          </Col>
+        </Row>
+        <Row style={this.state.crimes.length > 0 ? { display: "none" } : null}>
+          <Col>
+            <p>
+              Please select a location and date above and a table and map will
+              be displayed here.
+            </p>
           </Col>
         </Row>
       </Container>

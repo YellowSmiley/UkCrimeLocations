@@ -8,9 +8,11 @@ import {
 
 class Map extends Component {
   render() {
-    const markers = this.props.crimes.map(crime => (
-      <Marker position={{ lat: crime.lat, lng: crime.lng }} />
-    ));
+    const markers = this.props.crimes.map(crime =>
+      crime.lat ? (
+        <Marker position={{ lat: crime.lat, lng: crime.lng }} />
+      ) : null
+    );
     const MyMapComponent = withScriptjs(
       withGoogleMap(props => (
         <GoogleMap

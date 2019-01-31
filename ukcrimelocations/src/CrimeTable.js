@@ -18,7 +18,7 @@ class CrimeTable extends Component {
     return (
       <>
         <p>Crimes</p>
-        <Table striped bordered hover>
+        <Table striped bordered>
           <thead>
             <tr>
               <th>Crime</th>
