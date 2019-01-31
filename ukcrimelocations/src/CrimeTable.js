@@ -4,15 +4,16 @@ import { Table } from "react-bootstrap";
 class CrimeTable extends Component {
   render() {
     let crimes;
-    if (this.props.crimes) {
-      crimes = this.props.crimes.map(crime => (
-        <tr>
-          <td>1</td>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-      ));
+    if (this.props.crimes.length) {
+      crimes = this.props.crimes.map((crime, i) => {
+        return (
+          <tr key={i}>
+            <td>{crime.category}</td>
+            <td>{crime.location}</td>
+            <td>{crime.outcome_status.category}</td>
+          </tr>
+        );
+      });
     }
     return (
       <>
@@ -22,7 +23,6 @@ class CrimeTable extends Component {
             <tr>
               <th>Crime</th>
               <th>Location</th>
-              <th>Type</th>
               <th>Details</th>
             </tr>
           </thead>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Jumbotron } from "react-bootstrap";
-import Search from "./Search";
+import ForceSelector from "./ForceSelector";
 import Map from "./Map";
 import CrimeTable from "./CrimeTable";
 import "./App.css";
@@ -8,32 +8,42 @@ import "./App.css";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { crimes: [], area: "leicestershire", date: "2017-02" };
+    this.state = {
+      crimes: [],
+      date: "2017-02"
+    };
+    this.handleChangeLocation = this.handleChangeLocation.bind(this);
   }
 
-  fetchCrimes() {
+  fetchCrimes(location) {
     fetch(
       "https://data.police.uk/api/crimes-no-location?category=all-crime&force=" +
-        this.state.area +
+        location +
         "&date=" +
         this.state.date
     )
-      .then(function(response) {
+      .then(response => {
         return response.json();
       })
-      .then(function(json) {
+      .then(json => {
         this.setState({ crimes: json });
       })
       .catch(error => console.error("Error:", error));
   }
 
-  componentDidMount() {
-    this.fetchCrimes();
+  handleChangeLocation(location) {
+    this.fetchCrimes(location.value);
   }
 
   render() {
     return (
       <Container>
+        <link
+          rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+          crossOrigin="anonymous"
+        />
         <Row>
           <Col>
             <Jumbotron fluid>
@@ -43,18 +53,19 @@ class App extends Component {
         </Row>
         <Row>
           <Col>
-            <Search />
+            <ForceSelector handleChangeLocation={this.handleChangeLocation} />
           </Col>
         </Row>
         <Row>
-          <Col>
-            <CrimeTable />
-          </Col>
+          <br />
         </Row>
         <Row>
           <Col>
-            <Map crimes={this.state.crimes} />
+            <CrimeTable crimes={this.state.crimes} />
           </Col>
+        </Row>
+        <Row>
+          <Col>{/* <Map crimes={this.state.crimes} /> */}</Col>
         </Row>
       </Container>
     );
