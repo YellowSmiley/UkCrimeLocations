@@ -45,7 +45,6 @@ class CrimeTable extends Component {
             })
             .indexOf(crimeFormatted.value) === -1
         ) {
-          console.log(crimeOptions.indexOf(crimeFormatted));
           crimeOptions.push(crimeFormatted);
         }
       }
