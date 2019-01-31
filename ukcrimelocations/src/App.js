@@ -27,7 +27,7 @@ class App extends Component {
   }
 
   fetchCrimes() {
-    this.setState({ loading: true, error: "" });
+    this.setState({ crimes: [], loading: true, error: "" });
     fetch(
       "https://data.police.uk/api/crimes-no-location?category=all-crime&force=" +
         this.state.location +
